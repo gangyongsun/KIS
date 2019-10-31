@@ -55,7 +55,7 @@
                         <a class="J_menuItem" href="/system/main"><i class="fa fa-home"></i><span class="nav-label">主页</span></a>
                     </li>
                     <li class="line dk"></li>
-                    <shiro:hasPermission name="system/management">
+                    <!-- <shiro:hasPermission name="system/management"> -->
 	                    <li class="hidden-folded padder m-t m-b-sm text-muted text-xs"><span class="ng-scope">系统管理</span></li>
 	                    <shiro:hasPermission name="user/management">
 		                    <li>
@@ -89,7 +89,7 @@
 		                        </ul>
 		                    </li>
 	                    </shiro:hasPermission>
-                    </shiro:hasPermission>
+                    <!--  </shiro:hasPermission> -->
                     <li class="line dk"></li>
                     <li class="hidden-folded padder m-t m-b-sm text-muted text-xs"><span class="ng-scope">应用测试</span></li>
                     <li>
@@ -102,11 +102,11 @@
 	                            <li><a class="J_menuItem" href="/file/index">文件上传</a></li>
 	                        </ul>
                         </shiro:hasPermission>
-                        <shiro:hasPermission name="nonsearchtermlist">
+                       <!--  <shiro:hasPermission name="nonsearch"> -->
 	                        <ul class="nav nav-second-level">
 	                            <li><a class="J_menuItem" href="/console/index">未收录搜索记录</a></li>
 	                        </ul>
-                       </shiro:hasPermission>
+                      <!--   </shiro:hasPermission> -->
                     </li>
                 </ul>
             </div>

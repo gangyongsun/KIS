@@ -56,7 +56,7 @@ function init_pieChart(keyData, displayData) {
 		},
 		tooltip : {
 			trigger : 'item',
-			formatter : "{d}%"
+			formatter : "{b} : {c} ({d}%)"
 		},
 		legend : {
 			orient : 'vertical',
@@ -67,7 +67,7 @@ function init_pieChart(keyData, displayData) {
 		series : [ {
 			name : '比例',
 			type : 'pie',
-			radius : '60%',
+			radius : '55%',
 			center : [ '50%', '60%' ],
 			data : displayData
 		} ]
@@ -96,7 +96,7 @@ function init_funnel(keyData, displayData){
         },
         tooltip : {
             trigger: 'item',
-            formatter: "{c}"
+            formatter: "{b} : {c}"
         },
         legend: {
             data : keyData
@@ -106,13 +106,13 @@ function init_funnel(keyData, displayData){
             {
                 name:'点击量',
                 type:'funnel',
-                width: '20%',
+                width: '40%',
                 data: displayData
             },
             {
                 name:'点击量',
                 type:'funnel',
-                x : '70%',
+                x : '50%',
                 sort : 'ascending',
                 itemStyle: {
                     normal: {

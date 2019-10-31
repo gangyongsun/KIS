@@ -167,8 +167,8 @@ CREATE TABLE `sys_user` (
   `user_name` varchar(33) DEFAULT NULL,
   `pass_word` varchar(33) DEFAULT NULL,
   `nick_name` varchar(33) DEFAULT NULL,
-  `create_time` timestamp NULL DEFAULT NULL,
-  `lastLogin_time` timestamp NULL DEFAULT NULL,
+  `create_time` TIMESTAMP DEFAULT NULL,
+  `lastLogin_time` TIMESTAMP DEFAULT NULL,
   `user_enable` int(10) DEFAULT '1' COMMENT '是否启用',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
