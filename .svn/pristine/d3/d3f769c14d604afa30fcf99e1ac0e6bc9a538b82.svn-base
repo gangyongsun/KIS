@@ -40,7 +40,7 @@
 				<div class="row">
 					<div class="col-sm-12">
 						<dl>
-							<dt class="text-navy" th:if="${keyInfo.definationCN !='' || keyInfo.definationEN !=''}">术语定义：</dt>
+							<dt class="text-navy"th:if="${keyInfo.definationCN !='' || keyInfo.definationEN !=''}">术语定义：</dt>
 							<dd th:if="${keyInfo.definationCN !=''}" th:text="${keyInfo.definationCN +'【来源: '+ keyInfo.definationCNResource +'】' }"></dd>
 							<dd th:if="${keyInfo.definationEN !=''}" th:text="${keyInfo.definationEN +'【SOURCE: '+ keyInfo.definationENResource +'】' }"></dd>
 						</dl>
@@ -49,14 +49,12 @@
 				<div class="row">
 					<div class="col-sm-12">
 						<dl>
-							<dt class="text-navy" th:if="${keyInfo.sentenceCN !='' || keyInfo.sentenceEN !=''}">例句参考：</dt>
-							<dd class="text-navy" th:if="${keyInfo.sentenceCN !=''}">中文</dd>
-							<dd th:if="${keyInfo.sentenceCN !=''}" th:text="${keyInfo.sentenceCN}"></dd>
-							<dd class="text-navy" th:if="${keyInfo.sentenceCNResource !=''}" th:text="${'【来源: '+ keyInfo.sentenceCNResource +'】' }"></dd>
-							<br>
-							<dd class="text-navy" th:if="${keyInfo.sentenceEN !=''}">English</dd>
-							<dd th:if="${keyInfo.sentenceEN !=''}" th:text="${keyInfo.sentenceEN +' 【来源: '+ keyInfo.sentenceENResource +'】' }"></dd>
-							<dd class="text-navy" th:if="${keyInfo.sentenceENResource !=''}" th:text="${'【来源: '+ keyInfo.sentenceENResource +'】' }"></dd>
+							<dt class="text-navy" th:if="${sentenceList !=null}">例句参考：</dt>
+							<dl th:if="${sentenceList !=null}" th:each="sentence:${sentenceList}">
+								<dd th:text="${'★️. '+sentence}"></dd>
+							</dl>
+							<!-- <dt class="text-navy" th:if="${keyInfo.remark !=''}">备注：</dt>
+							<dd th:if="${keyInfo.remark !=''}" th:text="${keyInfo.remark}"></dd> -->
 						</dl>
 					</div>
 				</div>

@@ -1,11 +1,9 @@
 package cn.com.goldwind.kis.web;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,28 +35,12 @@ public class KeyInfoController {
 	 * @return
 	 */
 	@RequestMapping(value = "index")
-	public ModelAndView index(ModelMap map,HttpServletRequest request) {
-		//从HTTP头获取empNO
-		String empNO=request.getHeader("empNO");
-		System.out.println("从HTTP头获取empNO:"+empNO);
-		
-		HttpSession session= request.getSession();
-
-		if (null!=empNO && !"".equals(empNO)) {
-			//将HTTP头中的empNO设置到Session
-			Object obj=session.getAttribute("empNO");
-			if (null!=obj) {
-				System.out.println("session中已经存在empNO："+obj.toString());
-			}else {
-				session.setAttribute("empNO", empNO);
-				System.out.println("设置empNO到session："+session.getAttribute("empNO"));
-			}
-		}else {
-			//这段代码测试用，之后要去掉的
-			session.setAttribute("empNO", "50508");
-			System.out.println("设置默认empNO到session："+session.getAttribute("empNO"));
-		}
-		System.out.println("sessionID:" + session.getId());
+	public ModelAndView index(ModelMap map) {
+		// 查询所有术语类型
+//		List<String> keyInfoTypeList = keyInfoService.findTermTypes();
+//		if (null != keyInfoTypeList && keyInfoTypeList.size() > 0) {
+//			map.put("keyInfoTypeList", keyInfoTypeList);
+//		}
 
 		// 热词展示
 		List<String> hotKeyInfoList = keyInfoService.findHotTerms(9);
@@ -77,8 +59,7 @@ public class KeyInfoController {
 	 */
 	@RequestMapping(value = "search")
 	@ResponseBody
-	public TableSplitResult<KeyInfo> search(ModelMap map, String termType, String findContent, Integer pageSize, Integer pageNumber,HttpServletRequest request) {
-		System.out.println(request.getSession().getAttribute("empNO"));
+	public TableSplitResult<KeyInfo> search(ModelMap map, String termType, String findContent, Integer pageSize, Integer pageNumber) {
 		map.put("findContent", findContent);
 		map.put("termType", termType);
 		TableSplitResult<KeyInfo> page = keyInfoService.findPagedTermByKeyInfo(map, pageNumber, pageSize);
@@ -116,10 +97,10 @@ public class KeyInfoController {
 			keyInfo.setTotalClick(keyInfo.getTotalClick() + 1);
 			keyInfoService.updateTerm(keyInfo);
 		}
-//		List<String> sentenceList = getSentenceArrayList(keyInfo);
-//		if (null != sentenceList && sentenceList.size() > 0) {
-//			map.put("sentenceList", sentenceList);
-//		}
+		List<String> sentenceList = getSentenceArrayList(keyInfo);
+		if (null != sentenceList && sentenceList.size() > 0) {
+			map.put("sentenceList", sentenceList);
+		}
 		return new ModelAndView("detail");
 	}
 
@@ -129,44 +110,44 @@ public class KeyInfoController {
 	 * @param keyInfo
 	 * @return
 	 */
-//	private List<String> getSentenceArrayList(KeyInfo keyInfo) {
-//		List<String> sentenceList = new ArrayList<String>();
-//
-//		String[] sentenceCNArray = keyInfo.getSentenceCN().split("\\$\\$");
-//		String[] sentenceENArray = keyInfo.getSentenceEN().split("\\$\\$");
-//		String[] sentenceCNResourceArray = keyInfo.getSentenceCNResource().split("\\$\\$");
-//		String[] sentenceENResourceArray = keyInfo.getSentenceENResource().split("\\$\\$");
-//
-//		int sizeCN=sentenceCNArray.length;
-//		int sizeEN = sentenceENArray.length;
-//
-//		String sentenceCN = "";
-//		String sentenceCNResource = "";
-//		String sentenceEN = "";
-//		String sentenceENResource = "";
-//		
-//		for (int i = 0; i < sizeCN; i++) {
-//			sentenceCN = sentenceCNArray[i];
-//			sentenceCNResource = sentenceCNResourceArray[i];
-//			if (null != sentenceCNResource && !"".equals(sentenceCNResource)) {
-//				sentenceCN += "【来源: " + sentenceCNResource + "】";
-//			}
-//			if (null != sentenceCN && !"".equals(sentenceCN)) {
-//				sentenceList.add(sentenceCN);
-//			}
-//		}
-//		for (int i = 0; i < sizeEN; i++) {
-//			sentenceEN = sentenceENArray[i];
-//			sentenceENResource = sentenceENResourceArray[i];
-//			if (null != sentenceENResource && !"".equals(sentenceENResource)) {
-//				sentenceEN += "【SOURCE: " + sentenceENResource + "】";
-//			}
-//			if (null != sentenceEN && !"".equals(sentenceEN)) {
-//				sentenceList.add(sentenceEN);
-//			}
-//		}
-//		return sentenceList;
-//	}
+	private List<String> getSentenceArrayList(KeyInfo keyInfo) {
+		List<String> sentenceList = new ArrayList<String>();
+
+		String[] sentenceCNArray = keyInfo.getSentenceCN().split("\\$\\$");
+		String[] sentenceENArray = keyInfo.getSentenceEN().split("\\$\\$");
+		String[] sentenceCNResourceArray = keyInfo.getSentenceCNResource().split("\\$\\$");
+		String[] sentenceENResourceArray = keyInfo.getSentenceENResource().split("\\$\\$");
+
+		int sizeCN=sentenceCNArray.length;
+		int sizeEN = sentenceENArray.length;
+
+		String sentenceCN = "";
+		String sentenceCNResource = "";
+		String sentenceEN = "";
+		String sentenceENResource = "";
+		
+		for (int i = 0; i < sizeCN; i++) {
+			sentenceCN = sentenceCNArray[i];
+			sentenceCNResource = sentenceCNResourceArray[i];
+			if (null != sentenceCNResource && !"".equals(sentenceCNResource)) {
+				sentenceCN += "【来源: " + sentenceCNResource + "】";
+			}
+			if (null != sentenceCN && !"".equals(sentenceCN)) {
+				sentenceList.add(sentenceCN);
+			}
+		}
+		for (int i = 0; i < sizeEN; i++) {
+			sentenceEN = sentenceENArray[i];
+			sentenceENResource = sentenceENResourceArray[i];
+			if (null != sentenceENResource && !"".equals(sentenceENResource)) {
+				sentenceEN += "【SOURCE: " + sentenceENResource + "】";
+			}
+			if (null != sentenceEN && !"".equals(sentenceEN)) {
+				sentenceList.add(sentenceEN);
+			}
+		}
+		return sentenceList;
+	}
 
 	/**
 	 * 查询术语类型对应的数量

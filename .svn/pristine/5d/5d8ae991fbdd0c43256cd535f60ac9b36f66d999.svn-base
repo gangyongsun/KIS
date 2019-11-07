@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,27 +37,9 @@ public class KeyInfoController {
 	 */
 	@RequestMapping(value = "index")
 	public ModelAndView index(ModelMap map,HttpServletRequest request) {
-		//从HTTP头获取empNO
-		String empNO=request.getHeader("empNO");
-		System.out.println("从HTTP头获取empNO:"+empNO);
-		
-		HttpSession session= request.getSession();
-
-		if (null!=empNO && !"".equals(empNO)) {
-			//将HTTP头中的empNO设置到Session
-			Object obj=session.getAttribute("empNO");
-			if (null!=obj) {
-				System.out.println("session中已经存在empNO："+obj.toString());
-			}else {
-				session.setAttribute("empNO", empNO);
-				System.out.println("设置empNO到session："+session.getAttribute("empNO"));
-			}
-		}else {
-			//这段代码测试用，之后要去掉的
-			session.setAttribute("empNO", "50508");
-			System.out.println("设置默认empNO到session："+session.getAttribute("empNO"));
-		}
-		System.out.println("sessionID:" + session.getId());
+		//从HTTP头获取EmpNO
+//		String empNO=request.getHeader("empNO");
+//		System.out.println("empNO:"+empNO);
 
 		// 热词展示
 		List<String> hotKeyInfoList = keyInfoService.findHotTerms(9);
@@ -77,8 +58,7 @@ public class KeyInfoController {
 	 */
 	@RequestMapping(value = "search")
 	@ResponseBody
-	public TableSplitResult<KeyInfo> search(ModelMap map, String termType, String findContent, Integer pageSize, Integer pageNumber,HttpServletRequest request) {
-		System.out.println(request.getSession().getAttribute("empNO"));
+	public TableSplitResult<KeyInfo> search(ModelMap map, String termType, String findContent, Integer pageSize, Integer pageNumber) {
 		map.put("findContent", findContent);
 		map.put("termType", termType);
 		TableSplitResult<KeyInfo> page = keyInfoService.findPagedTermByKeyInfo(map, pageNumber, pageSize);
