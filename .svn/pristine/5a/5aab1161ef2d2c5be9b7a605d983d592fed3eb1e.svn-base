@@ -47,7 +47,7 @@ $(function() {
  * 初始化饼图
  */
 function init_pieChart(keyData, displayData) {
-	var pieChart = echarts.init(document.getElementById("echarts-pie-chart"),"macarons");
+	var pieChart = echarts.init(document.getElementById("echarts-pie-chart"));
 	var pieoption = {
 		title : {
 			text : '术语比例',
@@ -88,7 +88,7 @@ function init_pieChart(keyData, displayData) {
  * @returns
  */
 function init_funnel(keyData, displayData){
-	var funnelChart = echarts.init(document.getElementById("echarts-funnel-chart"),"macarons");
+	var funnelChart = echarts.init(document.getElementById("echarts-funnel-chart"));
     var funneloption = {
         title : {
             text: '术语点击量',

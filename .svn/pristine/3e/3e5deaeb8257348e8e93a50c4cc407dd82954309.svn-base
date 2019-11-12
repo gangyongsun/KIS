@@ -61,7 +61,7 @@ public class KeyInfoController {
 //		System.out.println("sessionID:" + session.getId());
 
 		// 热词展示
-		List<String> hotKeyInfoList = keyInfoService.findHotTerms(8);
+		List<String> hotKeyInfoList = keyInfoService.findHotTerms(9);
 		if (null != hotKeyInfoList && hotKeyInfoList.size() > 0) {
 			map.put("hotKeyInfoList", hotKeyInfoList);
 		}

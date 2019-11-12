@@ -37,31 +37,31 @@ public class KeyInfoController {
 	 * @return
 	 */
 	@RequestMapping(value = "index")
-	public ModelAndView index(ModelMap map, HttpServletRequest request) {
-		// 从HTTP头获取empNO
-		String empNO = request.getHeader("empNO");
+	public ModelAndView index(ModelMap map,HttpServletRequest request) {
+		//从HTTP头获取empNO
+		String empNO=request.getHeader("empNO");
 //		System.out.println("从HTTP头获取empNO:"+empNO);
+		
+		HttpSession session= request.getSession();
 
-		HttpSession session = request.getSession();
-
-		if (null != empNO && !"".equals(empNO)) {
-			// 将HTTP头中的empNO设置到Session
-			Object obj = session.getAttribute("empNO");
-			if (null != obj) {
+		if (null!=empNO && !"".equals(empNO)) {
+			//将HTTP头中的empNO设置到Session
+			Object obj=session.getAttribute("empNO");
+			if (null!=obj) {
 //				System.out.println("session中已经存在empNO："+obj.toString());
-			} else {
+			}else {
 				session.setAttribute("empNO", empNO);
 //				System.out.println("设置empNO到session："+session.getAttribute("empNO"));
 			}
-		} else {
-			// 这段代码测试用，之后要去掉的
+		}else {
+			//这段代码测试用，之后要去掉的
 			session.setAttribute("empNO", "50508");
 //			System.out.println("设置默认empNO到session："+session.getAttribute("empNO"));
 		}
 //		System.out.println("sessionID:" + session.getId());
 
 		// 热词展示
-		List<String> hotKeyInfoList = keyInfoService.findHotTerms(8);
+		List<String> hotKeyInfoList = keyInfoService.findHotTerms(9);
 		if (null != hotKeyInfoList && hotKeyInfoList.size() > 0) {
 			map.put("hotKeyInfoList", hotKeyInfoList);
 		}
@@ -77,27 +77,24 @@ public class KeyInfoController {
 	 */
 	@RequestMapping(value = "search")
 	@ResponseBody
-	public TableSplitResult<KeyInfo> search(ModelMap map, String termType, String findContent, Integer pageSize, Integer pageNumber, HttpServletRequest request) {
-		// System.out.println(request.getSession().getAttribute("empNO"));
-		TableSplitResult<KeyInfo> page = null;
-		if (null != findContent && !"".equals(findContent)||null != termType && !"".equals(termType)) {
-			map.put("findContent", findContent);
-			map.put("termType", termType);
-			page = keyInfoService.findPagedTermByKeyInfo(map, pageNumber, pageSize);
-			if (null == page || page.getTotal() == 0) {
-				// 根据内容查询
-				KeyInfoNonSearch keyInfoNonSearch = new KeyInfoNonSearch();
-				keyInfoNonSearch.setSearchContent(findContent);
-				KeyInfoNonSearch result = nonSearchService.findBySearchContent(keyInfoNonSearch);
-				if (null == result) {
-					// 查不到，则添加
-					keyInfoNonSearch.setSearchNumber(1);
-					nonSearchService.insert(keyInfoNonSearch);
-				} else {
-					// 查得到，则查询次数加1
-					result.setSearchNumber(result.getSearchNumber() + 1);
-					nonSearchService.update(result);
-				}
+	public TableSplitResult<KeyInfo> search(ModelMap map, String termType, String findContent, Integer pageSize, Integer pageNumber,HttpServletRequest request) {
+		//System.out.println(request.getSession().getAttribute("empNO"));
+		map.put("findContent", findContent);
+		map.put("termType", termType);
+		TableSplitResult<KeyInfo> page = keyInfoService.findPagedTermByKeyInfo(map, pageNumber, pageSize);
+		if (null == page || page.getTotal() == 0) {
+			//根据内容查询
+			KeyInfoNonSearch keyInfoNonSearch = new KeyInfoNonSearch();
+			keyInfoNonSearch.setSearchContent(findContent);
+			KeyInfoNonSearch result = nonSearchService.findBySearchContent(keyInfoNonSearch);
+			if (null == result) {
+				//查不到，则添加
+				keyInfoNonSearch.setSearchNumber(1);
+				nonSearchService.insert(keyInfoNonSearch);
+			} else {
+				//查得到，则查询次数加1
+				result.setSearchNumber(result.getSearchNumber() + 1);
+				nonSearchService.update(result);
 			}
 		}
 

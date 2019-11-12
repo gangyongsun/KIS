@@ -72,45 +72,16 @@ function searchTerminology(obj) {
                 title: '中文',
                 field: 'chinese',
                 align: 'left',
-                valign: 'middle',
-                cellStyle:formatTableUnit,
-                formatter:paramsMatter
+                valign: 'middle'
             },
             {
                 title: '英文',
                 field: 'english',
                 align: 'left',
-                valign: 'middle',
-                cellStyle:formatTableUnit,
-                formatter:paramsMatter
+                valign: 'middle'
             }
-        ],
-        formatNoMatches: function(){
-            return "该术语目前还没有收录，您的搜索已经告知术语专家！";
-        },
-	    formatLoadingMessage: function(){
-	        return "请稍等，正在加载中...";
-	    }
+        ]
     });
-	
-	function paramsMatter(value,row,index) {
-        var span=document.createElement('span');
-        span.setAttribute('title','点击显示术语详情');
-        span.innerHTML = value;
-        return span.outerHTML;
-     }
-
-     function formatTableUnit(value, row, index) {
-        return {
-           css: {
-              "white-space": 'nowrap',
-              "text-overflow": 'ellipsis',
-              "overflow": 'hidden',
-              "cursor": 'pointer'
-           }
-        }
-     }
-	
     t.on('load-success.bs.table', function (data) {//table加载成功后的监听函数
         console.log("load success");
         if($("#searchResultPanel").hasClass("hidden")){

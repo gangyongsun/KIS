@@ -47,7 +47,7 @@ $(function() {
  * 初始化饼图
  */
 function init_pieChart(keyData, displayData) {
-	var pieChart = echarts.init(document.getElementById("echarts-pie-chart"),"macarons");
+	var pieChart = echarts.init(document.getElementById("echarts-pie-chart"));
 	var pieoption = {
 		title : {
 			text : '术语比例',
@@ -67,7 +67,7 @@ function init_pieChart(keyData, displayData) {
 		series : [ {
 			name : '比例',
 			type : 'pie',
-			radius : '45%',
+			radius : '60%',
 			center : [ '50%', '60%' ],
 			data : displayData
 		} ]
@@ -88,7 +88,7 @@ function init_pieChart(keyData, displayData) {
  * @returns
  */
 function init_funnel(keyData, displayData){
-	var funnelChart = echarts.init(document.getElementById("echarts-funnel-chart"),"macarons");
+	var funnelChart = echarts.init(document.getElementById("echarts-funnel-chart"));
     var funneloption = {
         title : {
             text: '术语点击量',
@@ -115,21 +115,16 @@ function init_funnel(keyData, displayData){
             {
                 name:'点击量',
                 type:'funnel',
-                x : '30%',
-                left: '10%',
-	            width: '30%',
-	            maxSize: '80%',
+                x : '60%',
                 sort : 'ascending',
                 itemStyle: {
-	                normal: {
-	                    opacity: 08,           // 系列2图形透明度
-	                    borderColor: '#fff',    // 图形边框颜色
-	                    borderWidth: 3,          // 图形边框宽度大小
-	                    label: {
+                    normal: {
+                        // color: 各异,
+                        label: {
                             position: 'left'
                         }
-	                }
-	            },
+                    }
+                },
                 data:displayData
             }
         ]

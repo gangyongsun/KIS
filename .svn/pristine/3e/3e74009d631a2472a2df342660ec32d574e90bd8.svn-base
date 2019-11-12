@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="shortcut icon" href="../static/img/fav.png">
+<meta name="author" content="codepixer">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta charset="UTF-8">
+
+<title>金风科技-术语查询系统</title>
+<link rel="stylesheet" th:href="@{/static/css/fonts.google.1.css}" href="../static/css/fonts.google.1.css">
+<link rel="stylesheet" th:href="@{/static/css/fonts.google.2.css}" href="../static/css/fonts.google.2.css">
+<link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}" href="../static/css/bootstrap.min.css">
+<link rel="stylesheet" th:href="@{/static/css/font-awesome.css}" href="../static/css/font-awesome.css">
+<link rel="stylesheet" th:href="@{/static/css/bootstrap-table/bootstrap-table.min.css}" href="../static/css/bootstrap-table/bootstrap-table.min.css">
+<link rel="stylesheet" th:href="@{/static/css/main.css}" href="../static/css/main.css">
+<link rel="stylesheet" th:href="@{/static/css/animate.css}" href="../static/css/animate.css">
+<link rel="stylesheet" th:href="@{/static/css/style.css}" href="../static/css/style.css">
+</head>
+<body id="indexMain">
+	<section class="home-banner-area relative">
+		<div class="container">
+			<a href="index"><img height="80" width="145" th:src="@{/static/img/logo.svg}" src="../static/img/logo.svg" /></a>
+			<div class="row d-flex align-items-center justify-content-center">
+				<div class="about-content col-lg-7 col-xs-7 col-md-7 col-sm-7">
+					<h1 class="text-white">金风术语在线查询</h1>
+					<!-- <p th:text="${session.empNO}"></p> -->
+					<p>翻译办公室推出的术语知识服务平台，包含风电领域常用中英术语</p>
+					<div class="input-group pr-30 pl-30 ">
+						<input type="text" class="form-control" id="findContent" name="findContent" placeholder="请输入..." autocomplete="on">
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="button" onclick="searchTerminology()">
+								<span class="glyphicon glyphicon-search">搜索</span>
+							</button>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	<section class="about-area">
+		<div class="container">
+			<div class="col-lg-12 col-xs-12 col-md-12 col-sm-12">
+				<div class="wrapper wrapper-content animated fadeInRight">
+					<div class="panel panel-info" id="chartPanel">
+                        <div class="panel-heading">
+                        	<h5 class="panel-title">
+                            	<a data-toggle="collapse" href="#chartCollapse"><i class="fa fa-area-chart"></i> 统计图表（术语类别占比	术语点击量）</a>
+                            </h5>
+                        </div>
+                        <div class="panel-body">
+	                        <div id="chartCollapse" class="panel-collapse collapse in">
+						        <div class="row">
+						            <div class="col-lg-6 col-xs-6 col-md-6 col-sm-6">
+						            	<div class="echarts" id="echarts-pie-chart"></div>
+						            </div>
+						            <div class="col-lg-6 col-xs-6 col-md-6 col-sm-6">
+								   		<div class="echarts" id="echarts-funnel-chart"></div>
+								    </div>
+						        </div>
+					        </div>
+				        </div>
+                    </div>
+					<div class="panel panel-info" id="hotTermPanel">
+                        <div class="panel-heading">
+                        	<h5 class="panel-title">
+                            	<a data-toggle="collapse" href="#hotTermCollapse"><i class="fa fa-list-alt"></i> 热词推荐（热度等级标志 ★）</a>
+                            </h5>
+                        </div>
+                        <div class="panel-body">
+	                        <div id="hotTermCollapse" class="panel-collapse collapse in">
+						        <div class="row">
+								    <div class="col-lg-12 col-xs-12 col-md-12 col-sm-12" id="hotTermArea">
+						                <div class="row">
+					                        <div class="col-sm-3" th:each="hotKeyInfo:${hotKeyInfoList}">
+					                            <div class="file-box ">
+						                            <div class="file">
+						                                <a th:id="${hotKeyInfo.id}" onclick="javascript:showDetail(this.id);return false;">
+						                                    <span class="corner"></span>
+					                                        <!-- <img th:if="${hotKeyInfo.image !=''}" alt="image" class="img-responsive img-rounded" th:src="${'http://10.12.9.34/imgs/'+hotKeyInfo.image}" width="198" height="138.27"> -->
+					                                        <!-- <img th:unless="${hotKeyInfo.image !=''}" alt="image" class="img-rounded" src="http://10.12.9.34/imgs/404.png" width="198" height="138.27"> -->
+					                                        <small th:text="${hotKeyInfo.chinese}"></small>
+					                                        <small th:if="${hotKeyInfo.totalClick >=1 &&hotKeyInfo.totalClick <10}">★</small>
+					                                        <small th:if="${hotKeyInfo.totalClick >=10 &&hotKeyInfo.totalClick <100}">★★</small>
+					                                        <small th:if="${hotKeyInfo.totalClick >=100 &&hotKeyInfo.totalClick <1000}">★★★</small>
+					                                        <small th:if="${hotKeyInfo.totalClick >=1000 &&hotKeyInfo.totalClick <10000}">★★★★</small>
+					                                        <small th:if="${hotKeyInfo.totalClick >=10000}">★★★★★</small>
+						                                </a>
+						                            </div>
+					                            </div>
+					                        </div>
+						                </div>
+						                <div class="row">
+					                        <div class="text-center">
+						                    	<a th:id="${hotKeyInfoList.size()}" onclick="javascript:showMoreHotTerms(this);return false;">查看更多热词</a>
+					                        </div>
+					                    </div>
+						            </div>
+						        </div>
+					        </div>
+				        </div>
+                    </div>
+					<div class="panel panel-info" id="searchResultPanel">
+						<div class="panel-heading">
+							<h5 class="panel-title">
+								<a data-toggle="collapse" href="#searchResultCollapse"><i class="fa fa-area-chart"></i> 术语查询列表</a>
+							</h5>
+						</div>
+						<div class="panel-body">
+							<div id="searchResultCollapse" class="panel-collapse collapse in">
+								<div class="row">
+									<table class="table-no-bordered" id="termTable"></table>
+								</div>
+							</div>
+						</div>
+					</div>
+			    </div>
+			</div>
+		</div>
+        <div class="modal inmodal" id="myModal" tabindex="-1" role="dialog" aria-hidden="true"></div>
+	</section>
+	<!-- Start Footer Area -->
+	<footer>
+		<div class="container">
+			<div class="footer-bottom row align-items-center">
+				<p class="footer-text col-lg-12 col-xs-12 col-md-12 col-sm-12">
+					Copyright &copy;<label id="_datetime"></label>
+					- <a href="http://www.goldwind.com.cn" target="_blank" title="GoldWind">Goldwind</a> All rights reserved
+				</p>
+			</div>
+		</div>
+	</footer>
+	<!-- End Footer Area -->
+	<script type="text/javascript" th:src="@{/static/js/jquery-3.1.1.min.js}" src="../static/js/jquery-3.1.1.min.js"></script>
+	<script type="text/javascript" th:src="@{/static/js/bootstrap.min.js}" src="../static/js/bootstrap.min.js"></script>
+	<script type="text/javascript" th:src="@{/static/js/bootstrap-table/bootstrap-table.js}" src="../static/js/bootstrap-table/bootstrap-table.js"></script>
+	<script type="text/javascript" th:src="@{/static/js/bootstrap-table/bootstrap-table-mobile.min.js}" src="../static/js/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+	<script type="text/javascript" th:src="@{/static/js/bootstrap-table/locale/bootstrap-table-zh-CN.min.js}" src="../static/js/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script type="text/javascript" th:src="@{/static/js/echarts/echarts-all.js}" src="../static/js/echarts/echarts-all.js"></script>
+	
+    <!-- 自定义js -->
+	<script type="text/javascript" th:src="@{/static/js/content.js}" src="../static/js/content.js"></script>
+	<script type="text/javascript" th:src="@{/static/js/kis/search.js}" src="../static/js/kis/search.js"></script>
+	<script type="text/javascript" th:src="@{/static/js/kis/dashboard.js}" src="../static/js/kis/dashboard.js"></script>
+	<script>
+		document.getElementById("_datetime").innerText=new Date().getFullYear();
+		 $("#searchResultPanel").toggle();
+    </script>
+</body>
+</html>
