@@ -86,7 +86,7 @@ function searchTerminology(obj) {
             }
         ],
         formatNoMatches: function(){
-            return "该术语目前还没有收录，您的搜索已经告知术语专家！";
+            return "该术语目前还没有收录，您的搜索已经告知管理员！";
         },
 	    formatLoadingMessage: function(){
 	        return "请稍等，正在加载中...";

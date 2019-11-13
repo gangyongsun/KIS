@@ -119,57 +119,9 @@ public class KeyInfoController {
 			keyInfo.setTotalClick(keyInfo.getTotalClick() + 1);
 			keyInfoService.updateTerm(keyInfo);
 		}
-//		List<String> sentenceList = getSentenceArrayList(keyInfo);
-//		if (null != sentenceList && sentenceList.size() > 0) {
-//			map.put("sentenceList", sentenceList);
-//		}
 		return new ModelAndView("detail");
 	}
 
-	/**
-	 * 解析例句和例句来源
-	 * 
-	 * @param keyInfo
-	 * @return
-	 */
-//	private List<String> getSentenceArrayList(KeyInfo keyInfo) {
-//		List<String> sentenceList = new ArrayList<String>();
-//
-//		String[] sentenceCNArray = keyInfo.getSentenceCN().split("\\$\\$");
-//		String[] sentenceENArray = keyInfo.getSentenceEN().split("\\$\\$");
-//		String[] sentenceCNResourceArray = keyInfo.getSentenceCNResource().split("\\$\\$");
-//		String[] sentenceENResourceArray = keyInfo.getSentenceENResource().split("\\$\\$");
-//
-//		int sizeCN=sentenceCNArray.length;
-//		int sizeEN = sentenceENArray.length;
-//
-//		String sentenceCN = "";
-//		String sentenceCNResource = "";
-//		String sentenceEN = "";
-//		String sentenceENResource = "";
-//		
-//		for (int i = 0; i < sizeCN; i++) {
-//			sentenceCN = sentenceCNArray[i];
-//			sentenceCNResource = sentenceCNResourceArray[i];
-//			if (null != sentenceCNResource && !"".equals(sentenceCNResource)) {
-//				sentenceCN += "【来源: " + sentenceCNResource + "】";
-//			}
-//			if (null != sentenceCN && !"".equals(sentenceCN)) {
-//				sentenceList.add(sentenceCN);
-//			}
-//		}
-//		for (int i = 0; i < sizeEN; i++) {
-//			sentenceEN = sentenceENArray[i];
-//			sentenceENResource = sentenceENResourceArray[i];
-//			if (null != sentenceENResource && !"".equals(sentenceENResource)) {
-//				sentenceEN += "【SOURCE: " + sentenceENResource + "】";
-//			}
-//			if (null != sentenceEN && !"".equals(sentenceEN)) {
-//				sentenceList.add(sentenceEN);
-//			}
-//		}
-//		return sentenceList;
-//	}
 
 	/**
 	 * 查询术语类型对应的数量

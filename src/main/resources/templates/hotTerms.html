@@ -39,11 +39,16 @@
 	</div>
        	<div class="row">
 	       	<div class="text-center">
-	    		<a th:if="${hotKeyInfoList.size()<=40}" th:id="${hotKeyInfoList.size()}" onclick="javascript:showMoreHotTerms(this);return false;">查看更多热词</a>
+	    		<a th:if="${hotKeyInfoList.size()<32}" th:id="${hotKeyInfoList.size()}" onclick="javascript:showMoreHotTerms(this);return false;">查看更多热词</a>
 	    	</div>
 	    </div>
 	<!-- End Footer Area -->
 	<!-- <script type="text/javascript" th:src="@{/static/js/jquery-3.1.1.min.js}" src="../static/js/jquery-3.1.1.min.js"></script> -->
 	<!-- <script type="text/javascript" th:src="@{/static/js/bootstrap.min.js}" src="../static/js/bootstrap.min.js"></script> -->
+	<script>
+		$('.file-box').each(function () {
+			animationHover(this, 'pulse');
+		 });
+    </script>
 </body>
 </html>
