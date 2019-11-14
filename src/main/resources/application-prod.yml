@@ -21,12 +21,12 @@ spring:
 
     hikari: 
       readOnly: false
-      connectionTimeout: 30000
-      idleTimeout: 30000
+      connectionTimeout: 60000
+      idleTimeout: 60000
       validationTimeout: 3000
-      maxLifetime: 1800000
+      maxLifetime: 60000
       loginTimeout: 5
-      maximumPoolSize: 100
+      maximumPoolSize: 200
       minimumIdle: 10
 
   jpa:

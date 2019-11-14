@@ -29,8 +29,8 @@ spring:
       validationTimeout: 3000
       maxLifetime: 60000
       loginTimeout: 5
-      maximumPoolSize: 100
-      #minimumIdle: 10
+      maximumPoolSize: 200
+      minimumIdle: 10
     message:
       baseame: static/i18n/messages #相对路径 开头请勿添加斜杠
 
