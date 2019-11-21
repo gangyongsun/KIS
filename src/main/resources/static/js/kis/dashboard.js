@@ -54,9 +54,13 @@ function init_pieChart(keyData, displayData) {
 			subtext : '点击查看术语列表',
 			x : 'center',
 			textStyle : {
-				color : "#2ec7c9",
+				color : "#07a2a4",
 				fontSize : 14,
-			}
+			},
+			subtextStyle: {
+	            color: '#2ec7c9',
+	            fontSize: 11
+	        },
 		},
 		tooltip : {
 			trigger : 'item',
@@ -103,7 +107,7 @@ function init_ring(keyData, displayData){
 			text : '术语点击量',
 			x : 'center',// 标题的位置 默认是left，其余还有center、right属性
 			textStyle : {
-				color : "#2ec7c9",
+				color : "#07a2a4",
 				fontSize : 14,
 			}
 		},

@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.suny.mmseg.interfa.MMsegInterface;
+
 import cn.com.goldwind.kis.entity.AccessSummary;
 import cn.com.goldwind.kis.entity.KeyInfo;
 import cn.com.goldwind.kis.entity.KeyInfoNonSearch;
@@ -81,7 +83,14 @@ public class KeyInfoController {
 		// System.out.println(request.getSession().getAttribute("empNO"));
 		TableSplitResult<KeyInfo> page = null;
 		if (null != findContent && !"".equals(findContent)||null != termType && !"".equals(termType)) {
-			map.put("findContent", findContent);
+			
+			//分词
+			MMsegInterface mmInterface = MMsegInterface.getInstance();
+			List<String> findContentList=mmInterface.textWordSegToList(findContent);
+//			System.out.println(findContentList);
+			
+			map.put("findContentList", findContentList);
+//			map.put("findContent", findContent);
 			map.put("termType", termType);
 			page = keyInfoService.findPagedTermByKeyInfo(map, pageNumber, pageSize);
 			if (null == page || page.getTotal() == 0) {

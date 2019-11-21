@@ -68,6 +68,14 @@
 					LOWER(english) like LOWER(CONCAT("%",#{findContent,jdbcType=VARCHAR},"%"))
 				)
 			</if>
+			<if test="findContentList != null and findContentList.size()>0">
+				<foreach collection="findContentList" item="findContent" index="index">
+                    or (
+						chinese like CONCAT("%",#{findContent,jdbcType=VARCHAR},"%") or
+						LOWER(english) like LOWER(CONCAT("%",#{findContent,jdbcType=VARCHAR},"%"))
+					)
+            	</foreach>
+			</if>
 			<if test="termType != null and termType !='' ">
 				and (
 					LOWER(classification2) like LOWER(CONCAT("%",#{termType,jdbcType=VARCHAR},"%"))
