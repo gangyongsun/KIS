@@ -207,7 +207,7 @@ function openWebResponse(){
 			              '</div>'+
 			              '<div class="form-group">'+
 			                  '<div class="col-sm-1 col-sm-offset-9">'+
-			                      '<button class="btn btn-primary" type="button" onclick="javascript:webresponseLog();return false;">提交</button>'+
+			                      '<button class="btn btn-primary" type="button" onclick="javascript:webresponseLog(this);return false;">提交</button>'+
 			                  '</div>'+
 			              '</div>'+
 						'</div>'+

@@ -1,7 +1,7 @@
 package cn.com.goldwind.kis.web;
 
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +50,8 @@ public class KeyInfoController extends BaseController {
 		//1.首先获取userId和key
 		String userId = request.getParameter("userId");
 		String key = request.getParameter("sign") == null ? "" : request.getParameter("sign");
+		System.out.println("userId=" + userId);
+		System.out.println("key=" + key);
 		//2.验证userId是否被改过
 		boolean flag = validateUserId(userId, key);
 		//3.如果userId没问题，则将HTTP头中的userId设置到Session
@@ -62,11 +64,14 @@ public class KeyInfoController extends BaseController {
 				//3.1.1判断是否与当前userId相同，不同则替换
 				if (!userId.equals(obj.toString())) {
 					session.setAttribute("userId", userId);
+					System.out.println("更新了session中的userId："+session.getAttribute("userId"));
 				}
 			} else {
 				//3.2如果session中没有userId则设置
 				session.setAttribute("userId", userId);
+				System.out.println("设置userId到session：" + session.getAttribute("userId"));
 			}
+			System.out.println("sessionID:" + session.getId());
 		}else {
 			System.out.println("验证失败");
 		}
@@ -89,6 +94,7 @@ public class KeyInfoController extends BaseController {
 	private boolean validateUserId(String userId, String key) {
 		boolean flag = false;
 		String md5 = MathUtil.getMD5(userId + "@" + "@#$%^KIS@@@@@)(");
+		System.out.println("加密验证代码："+md5);
 		if (md5.equals(key)) {
 			flag = true;
 		}
@@ -167,16 +173,21 @@ public class KeyInfoController extends BaseController {
 	 * @param map
 	 * @return
 	 */
-	@RequestMapping(value = "quantatySummary")
+	@RequestMapping(value = "summary")
 	@ResponseBody
-	public Map<String, Integer> quantatySummary() {
-		List<AccessSummary> quantatySummaryList = keyInfoService.findQuantatySummary();
-		Map<String, Integer> quantatySummaryMap = new LinkedHashMap<String, Integer>();
+	public Map<String, Integer> summary() {
+		// 查询所有术语类型
+		List<String> keyInfoTypeList = keyInfoService.findTermTypes();
 
-		for (AccessSummary quantatySummary : quantatySummaryList) {
-			quantatySummaryMap.put(quantatySummary.getClassification(), quantatySummary.getClassificationQuantaty());
+		Map<String, Integer> termTypeNumMap = new HashMap<String, Integer>();
+
+		if (null != keyInfoTypeList && keyInfoTypeList.size() > 0) {
+			for (String keyInfoType : keyInfoTypeList) {
+				int num = keyInfoService.getNumByType(keyInfoType);
+				termTypeNumMap.put(keyInfoType, num);
+			}
 		}
-		return quantatySummaryMap;
+		return termTypeNumMap;
 	}
 
 	/**
@@ -189,7 +200,7 @@ public class KeyInfoController extends BaseController {
 	@ResponseBody
 	public Map<String, Integer> accessSummary() {
 		List<AccessSummary> accessSummaryList = keyInfoService.findAccessSummary();
-		Map<String, Integer> accessSummaryMap = new LinkedHashMap<String, Integer>();
+		Map<String, Integer> accessSummaryMap = new HashMap<String, Integer>();
 
 		for (AccessSummary accessSummary : accessSummaryList) {
 			accessSummaryMap.put(accessSummary.getClassification(), accessSummary.getTotalAccess());

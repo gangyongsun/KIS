@@ -1,7 +1,7 @@
 package cn.com.goldwind.kis.web;
 
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +25,6 @@ import cn.com.goldwind.kis.service.KeyInfoService;
 import cn.com.goldwind.kis.service.NonSearchService;
 import cn.com.goldwind.kis.service.WebResponseService;
 import cn.com.goldwind.kis.shiro.controller.BaseController;
-import cn.com.goldwind.kis.utils.MathUtil;
 
 @Controller
 @RequestMapping("/kis")
@@ -35,7 +34,7 @@ public class KeyInfoController extends BaseController {
 
 	@Autowired
 	NonSearchService nonSearchService;
-
+	
 	@Autowired
 	WebResponseService webResponseService;
 
@@ -47,29 +46,23 @@ public class KeyInfoController extends BaseController {
 	 */
 	@RequestMapping(value = "index")
 	public ModelAndView index(ModelMap map, HttpServletRequest request) {
-		//1.首先获取userId和key
-		String userId = request.getParameter("userId");
-		String key = request.getParameter("sign") == null ? "" : request.getParameter("sign");
-		//2.验证userId是否被改过
-		boolean flag = validateUserId(userId, key);
-		//3.如果userId没问题，则将HTTP头中的userId设置到Session
-		if (flag) {
-			HttpSession session = request.getSession();
-			Object obj = session.getAttribute("userId");
-			//3.1如果session里已经存在userId属性
+		// 从HTTP头获取empNO
+		String empNO = request.getHeader("empNO");
+		System.out.println("从HTTP头获取empNO:"+empNO);
+
+		HttpSession session = request.getSession();
+
+		if (null != empNO && !"".equals(empNO)) {
+			// 将HTTP头中的empNO设置到Session
+			Object obj = session.getAttribute("empNO");
 			if (null != obj) {
-				System.out.println("session中已经存在userId：" + obj.toString());
-				//3.1.1判断是否与当前userId相同，不同则替换
-				if (!userId.equals(obj.toString())) {
-					session.setAttribute("userId", userId);
-				}
+				System.out.println("session中已经存在empNO："+obj.toString());
 			} else {
-				//3.2如果session中没有userId则设置
-				session.setAttribute("userId", userId);
+				session.setAttribute("empNO", empNO);
+				System.out.println("设置empNO到session："+session.getAttribute("empNO"));
 			}
-		}else {
-			System.out.println("验证失败");
 		}
+		System.out.println("sessionID:" + session.getId());
 
 		// 热词展示
 		List<String> hotKeyInfoList = keyInfoService.findHotTerms(8);
@@ -77,22 +70,6 @@ public class KeyInfoController extends BaseController {
 			map.put("hotKeyInfoList", hotKeyInfoList);
 		}
 		return new ModelAndView("search");
-	}
-
-	/**
-	 * 验证用户OA号
-	 * 
-	 * @param userId 用户OA号
-	 * @param key    OA系统加密后的校验文本
-	 * @return
-	 */
-	private boolean validateUserId(String userId, String key) {
-		boolean flag = false;
-		String md5 = MathUtil.getMD5(userId + "@" + "@#$%^KIS@@@@@)(");
-		if (md5.equals(key)) {
-			flag = true;
-		}
-		return flag;
 	}
 
 	/**
@@ -105,19 +82,19 @@ public class KeyInfoController extends BaseController {
 	@RequestMapping(value = "search")
 	@ResponseBody
 	public TableSplitResult<KeyInfo> search(ModelMap map, String termType, String findContent, Integer pageSize, Integer pageNumber, HttpServletRequest request) {
-		// System.out.println(request.getSession().getAttribute("userId"));
+		// System.out.println(request.getSession().getAttribute("empNO"));
 		TableSplitResult<KeyInfo> page = null;
-		if (null != findContent && !"".equals(findContent) || null != termType && !"".equals(termType)) {
-			// 首先根据关键词或类型进行精确查询
+		if (null != findContent && !"".equals(findContent)||null != termType && !"".equals(termType)) {
+			//首先根据关键词或类型进行精确查询
 			map.put("findContent", findContent.trim());
 			map.put("termType", termType);
 			page = keyInfoService.findPagedTermByKeyInfo(map, pageNumber, pageSize);
-
-			// 如果精确匹配查不到，则分词查询
+			
+			//如果精确匹配查不到，则分词查询
 			if (null == page || page.getTotal() == 0) {
-				// 分词
+				//分词
 				MMsegInterface mmInterface = MMsegInterface.getInstance();
-				List<String> findContentList = mmInterface.textWordSegToList(findContent.trim());
+				List<String> findContentList=mmInterface.textWordSegToList(findContent.trim());
 				findContentList.removeAll(Collections.singleton(null));
 //				System.out.println(findContentList);
 				map.put("findContentList", findContentList);
@@ -140,6 +117,7 @@ public class KeyInfoController extends BaseController {
 				}
 			}
 		}
+
 		return page;
 	}
 
@@ -161,22 +139,28 @@ public class KeyInfoController extends BaseController {
 		return new ModelAndView("detail");
 	}
 
+
 	/**
 	 * 查询术语类型对应的数量
 	 * 
 	 * @param map
 	 * @return
 	 */
-	@RequestMapping(value = "quantatySummary")
+	@RequestMapping(value = "summary")
 	@ResponseBody
-	public Map<String, Integer> quantatySummary() {
-		List<AccessSummary> quantatySummaryList = keyInfoService.findQuantatySummary();
-		Map<String, Integer> quantatySummaryMap = new LinkedHashMap<String, Integer>();
+	public Map<String, Integer> summary() {
+		// 查询所有术语类型
+		List<String> keyInfoTypeList = keyInfoService.findTermTypes();
 
-		for (AccessSummary quantatySummary : quantatySummaryList) {
-			quantatySummaryMap.put(quantatySummary.getClassification(), quantatySummary.getClassificationQuantaty());
+		Map<String, Integer> termTypeNumMap = new HashMap<String, Integer>();
+
+		if (null != keyInfoTypeList && keyInfoTypeList.size() > 0) {
+			for (String keyInfoType : keyInfoTypeList) {
+				int num = keyInfoService.getNumByType(keyInfoType);
+				termTypeNumMap.put(keyInfoType, num);
+			}
 		}
-		return quantatySummaryMap;
+		return termTypeNumMap;
 	}
 
 	/**
@@ -189,7 +173,7 @@ public class KeyInfoController extends BaseController {
 	@ResponseBody
 	public Map<String, Integer> accessSummary() {
 		List<AccessSummary> accessSummaryList = keyInfoService.findAccessSummary();
-		Map<String, Integer> accessSummaryMap = new LinkedHashMap<String, Integer>();
+		Map<String, Integer> accessSummaryMap = new HashMap<String, Integer>();
 
 		for (AccessSummary accessSummary : accessSummaryList) {
 			accessSummaryMap.put(accessSummary.getClassification(), accessSummary.getTotalAccess());
@@ -212,6 +196,7 @@ public class KeyInfoController extends BaseController {
 		return new ModelAndView("hotTerms");
 	}
 
+	
 	/**
 	 * 收集用户反馈信息
 	 * 
@@ -221,7 +206,7 @@ public class KeyInfoController extends BaseController {
 	@RequestMapping(value = "webresponseLog")
 	@ResponseBody
 	public Map<String, Object> webresponseLog(String content) {
-		WebResponse webResponse = new WebResponse();
+		WebResponse webResponse=new WebResponse();
 		webResponse.setContent(content);
 		webResponseService.saveWebresponseLog(webResponse);
 		resultMap.put("status", 200);
