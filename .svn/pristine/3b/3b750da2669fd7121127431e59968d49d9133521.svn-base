@@ -42,7 +42,7 @@ CREATE TABLE `t_key_info_nonesearch` (
 DROP TABLE IF EXISTS `t_webresponse`;
 create table t_webresponse(
 	`id` int(11) NOT NULL AUTO_INCREMENT,
-    `empNO` varchar(16) NULL,
+    `empNO` varchar(7) NULL,
     `content` text NOT NULL,
     `create_time` timestamp NOT NULL,
 	PRIMARY KEY (`id`)
@@ -53,7 +53,7 @@ DROP TABLE IF EXISTS `t_webaccess_log`;
 
 create table t_webaccess_log(
 	`id` int(11) NOT NULL AUTO_INCREMENT  COMMENT '主键',
-    `empNo` varchar(16) NOT NULL COMMENT '用户OA号',
+    `empNo` varchar(7) NOT NULL COMMENT '用户OA号',
     `accessTime` timestamp NOT NULL COMMENT '访问时间',
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
@@ -63,7 +63,7 @@ DROP TABLE IF EXISTS `t_termtypebrowse_log`;
 
 create table t_termtypebrowse_log(
 	`id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `empNo` varchar(16) NOT NULL COMMENT '用户OA号',
+    `empNo` varchar(7) NOT NULL COMMENT '用户OA号',
      `termType` varchar(512) NOT NULL COMMENT '术语类型',
     `browseCounts` int(11) DEFAULT 0  NOT NULL COMMENT '浏览次数',
 	PRIMARY KEY (`id`)
@@ -73,7 +73,7 @@ DROP TABLE IF EXISTS `t_search_log`;
 
 create table t_search_log(
 	`id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `empNo` varchar(16) NOT NULL COMMENT '用户OA号',
+    `empNo` varchar(7) NOT NULL COMMENT '用户OA号',
      `findContent` varchar(256) NOT NULL COMMENT '搜索内容',
     `searchCounts` int(11) DEFAULT 0  NOT NULL COMMENT '搜索次数',
     `isAccurate` tinyint DEFAULT 0 NOT NULL COMMENT '0代表无匹配搜索内容；1代表精确匹配搜索内容；2代表分词匹配搜索内容',
@@ -84,7 +84,7 @@ DROP TABLE IF EXISTS `t_click_log`;
 
 create table t_click_log(
 	`id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `empNo` varchar(16) NOT NULL COMMENT '用户OA号',
+    `empNo` varchar(7) NOT NULL COMMENT '用户OA号',
      `termId` int(11) NOT NULL COMMENT '术语条目主键id',
     `clickCounts` int(11) DEFAULT 0  NOT NULL COMMENT '点击查看的次数',
 	PRIMARY KEY (`id`)

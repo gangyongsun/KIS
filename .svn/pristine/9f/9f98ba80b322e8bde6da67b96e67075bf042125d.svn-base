@@ -18,14 +18,16 @@ import org.springframework.web.servlet.ModelAndView;
 import cn.com.goldwind.kis.entity.AccessSummary;
 import cn.com.goldwind.kis.entity.ClickLog;
 import cn.com.goldwind.kis.entity.KeyInfo;
+import cn.com.goldwind.kis.entity.KeyInfoNonSearch;
 import cn.com.goldwind.kis.entity.SearchLog;
 import cn.com.goldwind.kis.entity.TermTypeBrowseLog;
 import cn.com.goldwind.kis.entity.WebAccessLog;
 import cn.com.goldwind.kis.entity.WebResponse;
-import cn.com.goldwind.kis.mmseg.similarity.SimWordInterface;
+import cn.com.goldwind.kis.mmseg.interfa.MMsegInterface;
 import cn.com.goldwind.kis.mybatis.page.TableSplitResult;
 import cn.com.goldwind.kis.service.ClickLogService;
 import cn.com.goldwind.kis.service.KeyInfoService;
+import cn.com.goldwind.kis.service.NonSearchService;
 import cn.com.goldwind.kis.service.SearchLogService;
 import cn.com.goldwind.kis.service.TermTypeBrowseLogService;
 import cn.com.goldwind.kis.service.WebAccessLogService;
@@ -33,6 +35,7 @@ import cn.com.goldwind.kis.service.WebResponseService;
 import cn.com.goldwind.kis.shiro.controller.BaseController;
 import cn.com.goldwind.kis.utils.LoggerUtils;
 import cn.com.goldwind.kis.utils.MathUtil;
+import cn.com.goldwind.kis.utils.StringUtils;
 
 @Controller
 @RequestMapping("/kis")
@@ -42,6 +45,9 @@ public class KeyInfoController extends BaseController {
 
 	@Autowired
 	private KeyInfoService keyInfoService;
+
+	@Autowired
+	private NonSearchService nonSearchService;
 
 	@Autowired
 	private WebResponseService webResponseService;
@@ -92,7 +98,7 @@ public class KeyInfoController extends BaseController {
 				/**
 				 * 记录网站访问记录
 				 */
-				WebAccessLog webAccessLog = new WebAccessLog();
+				WebAccessLog webAccessLog=new WebAccessLog();
 				webAccessLog.setEmpNo(session.getAttribute(USERID_STR).toString());
 				webAccessLog.setAccessTime(new Date());
 				webAccessLogService.insert(webAccessLog);
@@ -135,129 +141,96 @@ public class KeyInfoController extends BaseController {
 	@RequestMapping(value = "search")
 	@ResponseBody
 	public TableSplitResult<KeyInfo> search(ModelMap map, String termType, String findContent, Integer pageSize, Integer pageNumber, HttpServletRequest request) {
-		String empNo = getEmpNO(request);
-
+		//从session里获取用户OA号，如果获取的对象不为null则取出OA号字符串
+		HttpSession session=request.getSession();
+		Object obj = session.getAttribute(USERID_STR);
+		String empNo=null;
+		if (null!=obj) {
+			empNo=obj.toString();
+		}
+		
+		//用户输入搜索条件搜索
 		TableSplitResult<KeyInfo> page = null;
-
-		// 1.按类型浏览
+		if (null != findContent && !"".equals(findContent)) {
+			map.put("findContent", findContent.trim());
+			
+			/**
+			 * 如果用户通过OA登录，记录匹配搜索记录
+			 */
+			if (null!=empNo) {
+				SearchLog searchLog=new SearchLog();
+				searchLog.setEmpNo(empNo);
+				searchLog.setFindContent(findContent);
+				
+				SearchLog result=searchLogService.findByEmpNoAndFindContent(searchLog);
+				if (null == result) {
+					// 查不到，则添加
+					searchLog.setSearchCounts(1);
+					searchLogService.insert(searchLog);
+				} else {
+					// 查得到，则查询次数加1
+					result.setSearchCounts(result.getSearchCounts() + 1);
+					searchLogService.update(result);
+				}
+			}
+		}
 		if (null != termType && !"".equals(termType)) {
 			map.put("termType", termType);
+			
 			/**
-			 * 如果用户通过OA登录，按类型浏览术语列表记录
+			 * 按类型浏览术语列表记录
 			 */
-			if (null != empNo) {
-				saveTermTypeBrowseLog(termType, empNo);
-			}
-			page = keyInfoService.findPagedTermByType(map, pageNumber, pageSize);
-		}
-
-		// 2.用户输入搜索条件搜索
-		findContent = findContent.trim();// 先做一下trim
-		// 进行算法匹配查找
-		if (null != findContent && !"".equals(findContent)) {
-			int isAaccurate = 0;// 设置匹配参数，默认是无匹配搜索0
-			// 首先进行分词
-			SimWordInterface sim_cal = SimWordInterface.getInstance();
-			List<String> findContentResultList = sim_cal.getSimilaryTopWords(findContent);
-			// 如果返回列表为空，则说明没有搜索到相关词
-			if (findContentResultList.size() == 0) {
-				page = new TableSplitResult<KeyInfo>();
-				page.setPageNo(1);
-				page.setPageSize(0);
-				page.setTotal(0);
-				page.setRows(null);
-				/**
-				 * 如果用户通过OA登录，则记录匹配搜索记录
-				 */
-				if (null != empNo) {
-					saveSearchLog(findContent, empNo, isAaccurate);
-				}
-			} else {
-				// 如果列表返回的第一个元素与findContent相同，则进行精确搜索，否则进行范围搜索
-				if (findContentResultList.get(0).equalsIgnoreCase(findContent)) {
-					map.put("findContent", findContent);
-					isAaccurate = 1;// 精确匹配搜索
-					/**
-					 * 如果用户通过OA登录，则记录匹配搜索记录
-					 */
-					if (null != empNo) {
-						saveSearchLog(findContent, empNo, isAaccurate);
-					}
+			if (null!=empNo) {
+				TermTypeBrowseLog termTypeBrowseLog=new TermTypeBrowseLog();
+				termTypeBrowseLog.setEmpNo(empNo);
+				termTypeBrowseLog.setTermType(termType);
+				TermTypeBrowseLog result=termTypeBrowseLogService.findByEmpNoAndTermType(termTypeBrowseLog);
+				if (null == result) {
+					// 查不到，则添加
+					termTypeBrowseLog.setBrowseCounts(1);
+					termTypeBrowseLogService.insert(termTypeBrowseLog);
 				} else {
-					map.put("findContentList", findContentResultList);
-					isAaccurate = 2;// 分词匹配搜索
-					/**
-					 * 如果用户通过OA登录，则记录匹配搜索记录
-					 */
-					if (null != empNo) {
-						saveSearchLog(findContent, empNo, isAaccurate);
-					}
+					// 查得到，则查询次数加1
+					result.setBrowseCounts(result.getBrowseCounts() + 1);
+					termTypeBrowseLogService.update(result);
 				}
-				page = keyInfoService.findPagedTermBySearchCondition(map, pageNumber, pageSize);
+			}
+		}
+		
+		// 首先根据关键词或类型进行查询
+		page = keyInfoService.findPagedTermByKeyInfo(map, pageNumber, pageSize);
+
+		// 如果查不到则分词查询
+		if (null == page || page.getTotal() == 0) {
+			// 分词
+			MMsegInterface mmInterface = MMsegInterface.getInstance();
+			List<String> findContentList = mmInterface.textWordSegToList(findContent.trim());
+			findContentList=StringUtils.filterEmptyElement(findContentList);//去除空元素
+			//findContentList.removeAll(Collections.singleton(null));
+			map.put("findContentList", findContentList);
+			map.remove("findContent");
+			map.remove("termType");
+			page = keyInfoService.findPagedTermByKeyInfo(map, pageNumber, pageSize);
+			
+			/**
+			 * 查不到相关术语则做记录
+			 */
+			if (null == page || page.getTotal() == 0) {
+				KeyInfoNonSearch keyInfoNonSearch = new KeyInfoNonSearch();
+				keyInfoNonSearch.setSearchContent(findContent);
+				KeyInfoNonSearch result = nonSearchService.findBySearchContent(keyInfoNonSearch);
+				if (null == result) {
+					// 查不到，则添加
+					keyInfoNonSearch.setSearchNumber(1);
+					nonSearchService.insert(keyInfoNonSearch);
+				} else {
+					// 查得到，则查询次数加1
+					result.setSearchNumber(result.getSearchNumber() + 1);
+					nonSearchService.update(result);
+				}
 			}
 		}
 		return page;
-	}
-
-	/**
-	 * 从session里获取用户OA号;
-	 * <p>
-	 * 如果获取的对象不为null,则返回OA号字符串;
-	 * <p>
-	 * 否则返回null
-	 * 
-	 * @param request
-	 * @return
-	 */
-	private String getEmpNO(HttpServletRequest request) {
-		String empNo = null;
-		HttpSession session = request.getSession();
-		Object obj = session.getAttribute(USERID_STR);
-		if (null != obj) {
-			empNo = obj.toString();
-		}
-		return empNo;
-	}
-
-	/**
-	 * 记录按类型浏览记录
-	 * 
-	 * @param empNo    用户OA号
-	 * @param termType 浏览类型
-	 */
-	private void saveTermTypeBrowseLog(String empNo, String termType) {
-		TermTypeBrowseLog termTypeBrowseLog = new TermTypeBrowseLog(empNo, termType);
-		TermTypeBrowseLog result = termTypeBrowseLogService.findByEmpNoAndTermType(termTypeBrowseLog);
-		if (null == result) {
-			// 查不到，则添加
-			termTypeBrowseLog.setBrowseCounts(1);
-			termTypeBrowseLogService.insert(termTypeBrowseLog);
-		} else {
-			// 查得到，则查询次数加1
-			result.setBrowseCounts(result.getBrowseCounts() + 1);
-			termTypeBrowseLogService.update(result);
-		}
-	}
-
-	/**
-	 * 记录搜索记录
-	 * 
-	 * @param empNo       用户OA号
-	 * @param findContent 搜索内容
-	 * @param isAaccurate 搜索匹配模式
-	 */
-	private void saveSearchLog(String empNo, String findContent, int isAccurate) {
-		SearchLog searchLog = new SearchLog(empNo,findContent,isAccurate);
-		SearchLog result = searchLogService.findByEmpNoAndFindContent(searchLog);
-		if (null == result) {
-			// 查不到，则添加
-			searchLog.setSearchCounts(1);
-			searchLogService.insert(searchLog);
-		} else {
-			// 查得到，则查询次数加1
-			result.setSearchCounts(result.getSearchCounts() + 1);
-			searchLogService.update(result);
-		}
 	}
 
 	/**
@@ -269,24 +242,23 @@ public class KeyInfoController extends BaseController {
 	 */
 	@RequestMapping(value = "showDetail")
 	public ModelAndView showDetail(ModelMap map, Integer id, HttpServletRequest request) {
-		String empNO=getEmpNO(request);
-		if (null!=empNO) {
-			/**
-			 * 术语点击记录
-			 */
-			ClickLog clickLog = new ClickLog(empNO,id);
-			ClickLog result = clickLogService.findEmpNoAndTermId(clickLog);
-			if (null == result) {
-				// 查不到，则添加
-				clickLog.setClickCounts(1);
-				clickLogService.insert(clickLog);
-			} else {
-				// 查得到，则查询次数加1
-				result.setClickCounts(result.getClickCounts() + 1);
-				clickLogService.update(result);
-			}
+		/**
+		 * 术语点击记录
+		 */
+		ClickLog clickLog=new ClickLog();
+		clickLog.setEmpNo(request.getSession().getAttribute(USERID_STR).toString());
+		clickLog.setTermId(id);
+		ClickLog result = clickLogService.findEmpNoAndTermId(clickLog);
+		if (null == result) {
+			// 查不到，则添加
+			clickLog.setClickCounts(1);
+			clickLogService.insert(clickLog);
+		} else {
+			// 查得到，则查询次数加1
+			result.setClickCounts(result.getClickCounts() + 1);
+			clickLogService.update(result);
 		}
-
+		
 		KeyInfo keyInfo = keyInfoService.findTermById(id);
 		if (null != keyInfo) {
 			map.put("keyInfo", keyInfo);

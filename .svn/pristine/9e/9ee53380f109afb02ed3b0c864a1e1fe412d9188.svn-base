@@ -246,8 +246,8 @@ public class KeyInfoController extends BaseController {
 	 * @param findContent 搜索内容
 	 * @param isAaccurate 搜索匹配模式
 	 */
-	private void saveSearchLog(String empNo, String findContent, int isAccurate) {
-		SearchLog searchLog = new SearchLog(empNo,findContent,isAccurate);
+	private void saveSearchLog(String empNo, String findContent, int isAaccurate) {
+		SearchLog searchLog = new SearchLog(empNo, findContent, isAaccurate);
 		SearchLog result = searchLogService.findByEmpNoAndFindContent(searchLog);
 		if (null == result) {
 			// 查不到，则添加

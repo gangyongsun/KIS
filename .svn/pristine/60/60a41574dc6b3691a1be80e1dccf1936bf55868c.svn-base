@@ -53,14 +53,14 @@ public class SearchLog implements Serializable {
 	 * <p>
 	 * 2代表分词匹配搜索内容
 	 */
-	@Column(name = "isAccurate")
-	private Integer isAccurate;
+	@Column(name = "isAaccurate")
+	private Integer isAaccurate;
 
-	public SearchLog(String empNo, String findContent, Integer isAccurate) {
+	public SearchLog(String empNo, String findContent, Integer isAaccurate) {
 		super();
 		this.empNo = empNo;
 		this.findContent = findContent;
-		this.isAccurate = isAccurate;
+		this.isAaccurate = isAaccurate;
 	}
 
 	public SearchLog() {
