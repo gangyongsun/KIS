@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.com.goldwind.kis.repository.SearchLogRepository">
-	<resultMap id="BaseResultMap" type="cn.com.goldwind.kis.entity.SearchLog">
+<mapper namespace="cn.com.goldwind.kis.repository.WebAccessLogRepository">
+	<resultMap id="BaseResultMap" type="cn.com.goldwind.kis.entity.WebAccessLog">
 		<id column="id" property="id" jdbcType="INTEGER" />
 		<result column="empNo" property="empNo" jdbcType="VARCHAR" />
-		<result column="findContent" property="findContent" jdbcType="VARCHAR" />
-		<result column="searchCounts" property="searchCounts" jdbcType="INTEGER" />
-		<result column="isAccurate" property="isAccurate" jdbcType="TINYINT" />
+		<result column="accessTime" property="accessTime" jdbcType="TIMESTAMP" />
 	</resultMap>
 
 	<sql id="Base_Column_List">
-		id,empNo,findContent,searchCounts,isAccurate
+		id,empNo,accessTime
 	</sql>
 
 	<sql id="limit_sql">
@@ -23,12 +21,7 @@
 		<where>
 			<if test="empNo != null and empNo !='' ">
 				and (
-				empNo= #{empNoCondition,jdbcType=VARCHAR}
-				)
-			</if>
-			<if test="findContent != null and findContent !='' ">
-				and (
-				findContent= #{findContent,jdbcType=VARCHAR}
+					empNo= #{empNo,jdbcType=VARCHAR}
 				)
 			</if>
 		</where>
@@ -37,18 +30,17 @@
 	<select id="findAll" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from t_search_log
+		from t_webaccess_log
 		<include refid="where_all" />
-		order by searchCounts desc
 		<include refid="limit_sql" />
 	</select>
 
 	<select id="findCount" resultMap="BaseResultMap">
-		select count(1) from t_search_log
+		select count(1) from t_webaccess_log
 		<include refid="where_all" />
 	</select>
 	
-	<select id="searchTotalSearchCount" resultType="java.lang.Integer">
-		select sum(searchCounts) from t_search_log
+	<select id="searchTotalAccessCount" resultType="java.lang.Integer">
+		SELECT count(1) FROM t_webaccess_log
 	</select>
 </mapper>

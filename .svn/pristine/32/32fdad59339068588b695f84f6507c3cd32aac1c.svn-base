@@ -1,12 +1,9 @@
 package cn.com.goldwind.kis.service.impl;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
-import cn.com.goldwind.kis.bo.DailyAccessBo;
 import cn.com.goldwind.kis.entity.WebAccessLog;
 import cn.com.goldwind.kis.mybatis.BaseMybatisDao;
 import cn.com.goldwind.kis.mybatis.page.TableSplitResult;
@@ -32,11 +29,6 @@ public class WebAccessLogServiceImpl extends BaseMybatisDao<WebAccessLog> implem
 	@Override
 	public int getTotalAccessCount() {
 		return webAccessLogRepository.searchTotalAccessCount();
-	}
-
-	@Override
-	public List<DailyAccessBo> getDailyAccessBoList(int timePeriod) {
-		return webAccessLogRepository.findDailyAccessBoList(timePeriod);
 	}
 
 }

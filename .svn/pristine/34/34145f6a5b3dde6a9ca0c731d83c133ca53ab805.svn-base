@@ -306,6 +306,7 @@ public class KeyInfoController extends BaseController {
 	/**
 	 * 查询术语类型对应的数量
 	 * 
+	 * @param map
 	 * @return
 	 */
 	@RequestMapping(value = "quantatySummary")
@@ -323,6 +324,7 @@ public class KeyInfoController extends BaseController {
 	/**
 	 * 查询各术语类型对应的点击量
 	 * 
+	 * @param map
 	 * @return
 	 */
 	@RequestMapping(value = "accessSummary")

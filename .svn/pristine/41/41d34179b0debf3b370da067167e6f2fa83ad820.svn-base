@@ -114,9 +114,24 @@
                      </shiro:hasPermission>
                       <!--  <shiro:hasPermission name="kisAccessLog">  -->
 	                        <ul class="nav nav-second-level">
-	                            <li><a class="J_menuItem" href="/console/accessData">网站访问记录</a></li>
+	                            <li><a class="J_menuItem" href="/console/webResponseIndex">网站访问记录</a></li>
 	                        </ul>
-                    <!-- </shiro:hasPermission> -->
+                    <!-- </shiro:hasPermission>
+                          <shiro:hasPermission name="termScanLog"> 
+	                        <ul class="nav nav-second-level">
+	                            <li><a class="J_menuItem" href="/console/webResponseIndex">术语浏览记录</a></li>
+	                        </ul>
+                      </shiro:hasPermission>
+                       <shiro:hasPermission name="termSearchLog">
+	                        <ul class="nav nav-second-level">
+	                            <li><a class="J_menuItem" href="/console/webResponseIndex">术语搜索记录</a></li>
+	                        </ul>
+                      </shiro:hasPermission>
+                       <shiro:hasPermission name="termDetailLog">
+	                        <ul class="nav nav-second-level">
+	                            <li><a class="J_menuItem" href="/console/webResponseIndex">术语点击记录</a></li>
+	                        </ul>
+                        </shiro:hasPermission> -->
                     </li>
                 </ul>
             </div>

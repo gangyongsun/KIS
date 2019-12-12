@@ -76,16 +76,6 @@ public class ConsoleController {
 	public ModelAndView webResponseIndex(ModelMap map) {
 		return new ModelAndView("console/webResponse");
 	}
-	/**
-	 * webResponseIndex初始页面
-	 * 
-	 * @param map
-	 * @return
-	 */
-	@RequestMapping(value = "accessData")
-	public ModelAndView accessData(ModelMap map) {
-		return new ModelAndView("console/accessData");
-	}
 
 	/**
 	 * monitor初始页面
