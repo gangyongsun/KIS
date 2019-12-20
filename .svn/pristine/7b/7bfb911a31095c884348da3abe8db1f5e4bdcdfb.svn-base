@@ -34,15 +34,14 @@
 			<div class="ibox-content">
 				<div class="row row-lg">
 					<div class="col-sm-12">
-						<div class="col-sm-2" style="padding-top: 10px">
-							<span id="exportToolbar" style="display: inline-block" class="btn-group">
-								<select id="sel_exportoption" class="form-control">
-									<option value="">导出当前页数据</option>
-									<option value="all">导出全部数据</option>
-									<option value="selected">导出选中数据</option>
-								</select>
-							</span>
-						</div>
+						<!-- <div class="btn-group hidden-xs" id="exampleTableEventsToolbar" role="group">
+							<shiro:hasPermission name="user/add">
+								<a class="btn btn-success" id="addUser" onclick="showModal('showAddUser')"><span class="glyphicon glyphicon-plus"></span> 添加用户</a>
+							</shiro:hasPermission>
+							<shiro:hasPermission name="user/multidelete">
+								<a class="btn btn-danger" id="deleteSelected" onclick="deleteSelected()"><span class="glyphicon glyphicon-trash"></span> 删除用户</a>
+							</shiro:hasPermission>
+						</div> -->
 						<table id="noneSearchTable"></table>
 					</div>
 				</div>

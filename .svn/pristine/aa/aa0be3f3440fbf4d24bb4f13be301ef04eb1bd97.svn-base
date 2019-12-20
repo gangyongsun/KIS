@@ -1,12 +1,5 @@
 $(function() {
 	noneSearchPage();
-	$("#sel_exportoption").change(function () {
-		console.log($(this).val());
-        //刷新参数设置
-        $('#noneSearchTable').bootstrapTable('refreshOptions', {
-            exportDataType: $(this).val()
-        });
-    });
 })
 
 function noneSearchPage() {
@@ -24,10 +17,6 @@ function noneSearchPage() {
         showToggle: true,//是否显示切换试图（table/card）按钮
         showColumns: true,//是否显示内容列下拉框
         minimumCountColumns: 2,//最少允许的列数
-        showExport:true,
-        exportDataType:'basic',
-        exportTypes:['json', 'xml', 'csv', 'txt', 'excel'],  //导出文件类型
-        Icons:'glyphicon-export',
 		pagination : true, // 启用分页
 		pageNumber : 1,// 分页首页页码
 		pageSize : 10,// 分页页面数据条数
@@ -49,14 +38,11 @@ function noneSearchPage() {
 //			};
 //			return temp;
 //		},
+		onClickRow : function(row, element) {
+			showDetail(row.id);
+		},
 		idField : "id",// 指定主键列
-		columns : [  {
-            checkbox:true,
-        },{
-            visible:false,
-            field: 'id',//json数据中rows数组中的属性名
-            align: 'center'//水平居中
-        },{
+		columns : [ {
 			title : '查询内容',
 			field : 'findContent',
 			align : 'left',
@@ -75,7 +61,7 @@ function noneSearchPage() {
             formatter: function (value, row, index) {//自定义显示，也可以写标签
             	var add2db=
             		'<shiro:hasPermission name="user/deactive">'+
-					'<a class="btn btn-outline btn-info btn-sm" th:id="'+row.id+'" onclick="add2db()"><span class="fa fa-save"></span> 添加到术语库</a>'+
+					'<a class="btn btn-primary btn-sm" th:id="'+row.id+'" onclick="add2db()"><span class="glyphicon glyphicon-plus"></span> 添加到术语库</a>'+
 					'</shiro:hasPermission>';
                 return add2db;
             }

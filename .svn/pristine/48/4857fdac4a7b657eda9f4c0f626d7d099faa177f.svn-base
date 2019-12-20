@@ -117,6 +117,9 @@ function depNameDescTablePage() {
 		data_local : "zh-US",// 表格汉化
 		sidePagination : "server", // 服务端处理分页
 		queryParamsType : '',// 默认值为'limit',在默认情况下传给服务端的参数为：offset,limit,sort;设置为'',在这种情况下传给服务器的参数为：pageSize,pageNumber
+		onClickRow : function(row, element) {
+			showDetail(row.id);
+		},
 		idField : "id",// 指定主键列
 		columns : [ {
 			title : '二级部门名称',
@@ -167,6 +170,9 @@ function empDescTablePage() {
 		data_local : "zh-US",// 表格汉化
 		sidePagination : "server", // 服务端处理分页
 		queryParamsType : '',// 默认值为'limit',在默认情况下传给服务端的参数为：offset,limit,sort;设置为'',在这种情况下传给服务器的参数为：pageSize,pageNumber
+		onClickRow : function(row, element) {
+			showDetail(row.id);
+		},
 		idField : "id",// 指定主键列
 		columns : [ {
 			title : '员工姓名',

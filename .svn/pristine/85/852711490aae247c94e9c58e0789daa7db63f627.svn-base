@@ -1,21 +1,14 @@
 $(function() {
-	noneSearchPage();
-	$("#sel_exportoption").change(function () {
-		console.log($(this).val());
-        //刷新参数设置
-        $('#noneSearchTable').bootstrapTable('refreshOptions', {
-            exportDataType: $(this).val()
-        });
-    });
+	webResponsePage();
 })
 
-function noneSearchPage() {
-	var t = $("#noneSearchTable");
+function webResponsePage() {
+	var t = $("#webResponseTable");
 	t.bootstrapTable('destroy');
 	// 获取搜索关键词
 	//var findContentVal = $("#findContent").val();
 	var t = t.bootstrapTable({
-		url : '/console/searchLogList',
+		url : '/console/webResponseList',
 		method : 'get',
 		dataType : "json",
 		cache : false, // 是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
@@ -23,11 +16,7 @@ function noneSearchPage() {
 		showRefresh:true,//显示刷新按钮
         showToggle: true,//是否显示切换试图（table/card）按钮
         showColumns: true,//是否显示内容列下拉框
-        minimumCountColumns: 2,//最少允许的列数
-        showExport:true,
-        exportDataType:'basic',
-        exportTypes:['json', 'xml', 'csv', 'txt', 'excel'],  //导出文件类型
-        Icons:'glyphicon-export',
+        minimumCountColumns: 3,//最少允许的列数
 		pagination : true, // 启用分页
 		pageNumber : 1,// 分页首页页码
 		pageSize : 10,// 分页页面数据条数
@@ -36,7 +25,7 @@ function noneSearchPage() {
 		paginationPreText : '上一页',// 指定“上一页”按钮的图标或文字
 		paginationNextText : '下一页',// 指定“下一页”按钮的图标或文字
 		paginationLastText : "末页",// 指定“末页”按钮的图标或文字
-		paginationLoop:false,//不循环
+		paginationLoop : false,// 不循环
 		data_local : "zh-US",// 表格汉化
 		sidePagination : "server", // 服务端处理分页
 		queryParamsType : '',// 默认值为'limit',在默认情况下传给服务端的参数为：offset,limit,sort;设置为'',在这种情况下传给服务器的参数为：pageSize,pageNumber
@@ -49,21 +38,51 @@ function noneSearchPage() {
 //			};
 //			return temp;
 //		},
+		onClickRow : function(row, element) {
+			showDetail(row.id);
+		},
 		idField : "id",// 指定主键列
-		columns : [  {
-            checkbox:true,
-        },{
-            visible:false,
-            field: 'id',//json数据中rows数组中的属性名
-            align: 'center'//水平居中
-        },{
-			title : '查询内容',
-			field : 'findContent',
+		columns : [ {
+			visible : false,
+			field : 'id'
+		}, {
+			title : '员工姓名',
+			field : 'userName',
 			align : 'left',
 			valign : 'middle'
 		}, {
-			title : '查询次数',
-			field : 'searchCounts',
+			title : '邮件',
+			field : 'email',
+			align : 'left',
+			valign : 'middle'
+		},{
+			title : '集团',
+			field : 'unitTxt',
+			align : 'left',
+			valign : 'middle'
+		},{
+			title : '中心',
+			field : 'centerTxt',
+			align : 'left',
+			valign : 'middle'
+		},{
+			title : '部门',
+			field : 'deptName',
+			align : 'left',
+			valign : 'middle'
+		},{
+			title : '团队',
+			field : 'zhrOtext',
+			align : 'left',
+			valign : 'middle'
+		},{
+			title : '反馈内容',
+			field : 'content',
+			align : 'left',
+			valign : 'middle'
+		},{
+			title : '反馈时间',
+			field : 'responseTime',
 			align : 'left',
 			valign : 'middle'
 		},
@@ -75,7 +94,7 @@ function noneSearchPage() {
             formatter: function (value, row, index) {//自定义显示，也可以写标签
             	var add2db=
             		'<shiro:hasPermission name="user/deactive">'+
-					'<a class="btn btn-outline btn-info btn-sm" th:id="'+row.id+'" onclick="add2db()"><span class="fa fa-save"></span> 添加到术语库</a>'+
+					'<a class="btn btn-primary btn-sm" th:id="'+row.id+'" onclick="add2db()"><span class="glyphicon glyphicon-plus"></span> 记录</a>'+
 					'</shiro:hasPermission>';
                 return add2db;
             }

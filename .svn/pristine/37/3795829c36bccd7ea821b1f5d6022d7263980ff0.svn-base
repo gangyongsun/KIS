@@ -28,7 +28,7 @@ function empAccessCountDataRequest() {
 			for ( var i in data) {
 				empArray.push(data[i].userName);
 				empAccessCountArray.push(data[i].accessCount);
-				if (i > 8)
+				if (i > 13)
 					break;
 			}
 			init_columnchart(empArray, empAccessCountArray, "empDescBar");
@@ -54,7 +54,7 @@ function deptAccessEmpNumDataRequest() {
 			for ( var i in data) {
 				deptArray.push(data[i].deptName);
 				deptEmpNumArray.push(data[i].empNum);
-				if (i > 3)
+				if (i > 5)
 					break;
 			}
 			init_barchart(deptArray, deptEmpNumArray, "depNameDescBar");
@@ -117,6 +117,9 @@ function depNameDescTablePage() {
 		data_local : "zh-US",// 表格汉化
 		sidePagination : "server", // 服务端处理分页
 		queryParamsType : '',// 默认值为'limit',在默认情况下传给服务端的参数为：offset,limit,sort;设置为'',在这种情况下传给服务器的参数为：pageSize,pageNumber
+		onClickRow : function(row, element) {
+			showDetail(row.id);
+		},
 		idField : "id",// 指定主键列
 		columns : [ {
 			title : '二级部门名称',
@@ -167,6 +170,9 @@ function empDescTablePage() {
 		data_local : "zh-US",// 表格汉化
 		sidePagination : "server", // 服务端处理分页
 		queryParamsType : '',// 默认值为'limit',在默认情况下传给服务端的参数为：offset,limit,sort;设置为'',在这种情况下传给服务器的参数为：pageSize,pageNumber
+		onClickRow : function(row, element) {
+			showDetail(row.id);
+		},
 		idField : "id",// 指定主键列
 		columns : [ {
 			title : '员工姓名',
