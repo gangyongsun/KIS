@@ -100,9 +100,9 @@ public class KeyInfoController extends BaseController {
 				LoggerUtils.info(this.getClass(), "验证失败!");
 				gotoURL(response, "http://eis.goldwind.com.cn/showLogin");
 			}
-		} else {
-			String empNoString = getEmpNO(request);
-			if (null == empNoString || "".equals(empNoString)) {
+		}else {
+			String empNoString=getEmpNO(request);
+			if (null==empNoString||"".equals(empNoString)) {
 				gotoURL(response, "http://eis.goldwind.com.cn/showLogin");
 			}
 		}
@@ -115,6 +115,7 @@ public class KeyInfoController extends BaseController {
 		return new ModelAndView("search");
 	}
 
+	
 	/**
 	 * bootstrap table分页查询
 	 * 
@@ -312,14 +313,8 @@ public class KeyInfoController extends BaseController {
 	 */
 	@RequestMapping(value = "accessSummary")
 	@ResponseBody
-	public Map<String, Integer> accessSummary(Integer classificationLevel) {
-		List<AccessSummary> accessSummaryList = null;
-		if (classificationLevel == 2) {
-			accessSummaryList = keyInfoService.findAccessSummary();
-		} else if (classificationLevel == 3) {
-			accessSummaryList = keyInfoService.findAccessSummary4backGround();
-		}
-
+	public Map<String, Integer> accessSummary() {
+		List<AccessSummary> accessSummaryList = keyInfoService.findAccessSummary();
 		Map<String, Integer> accessSummaryMap = new LinkedHashMap<String, Integer>();
 
 		for (AccessSummary accessSummary : accessSummaryList) {

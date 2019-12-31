@@ -104,7 +104,7 @@
                         </shiro:hasPermission> -->
                         <shiro:hasPermission name="nonsearchtermlist">
 	                        <ul class="nav nav-second-level">
-	                            <li><a class="J_menuItem" href="/console/searchLogIndex">搜索记录</a></li>
+	                            <li><a class="J_menuItem" href="/console/searchLogIndex">未收录搜索记录</a></li>
 	                        </ul>
                        	</shiro:hasPermission>
                        <shiro:hasPermission name="webResponse">

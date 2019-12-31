@@ -144,16 +144,16 @@
 		SELECT classification2 classification,sum(totalClick) totalAccess
 		FROM t_key_info
 		group by classification2
-		having totalAccess>0
-		order by totalAccess desc
+		order by
+		totalAccess desc
 	</select>
 	
 	<select id="findAccessSummary4backGround" resultType="cn.com.goldwind.kis.entity.AccessSummary">
 		SELECT classification3 classification,sum(totalClick) totalAccess
 		FROM t_key_info
 		group by classification3
-        having totalAccess>0
-		order by totalAccess desc
+		order by
+		totalAccess desc
 	</select>
 
 	<select id="findQuantatySummary" resultType="cn.com.goldwind.kis.entity.AccessSummary">
