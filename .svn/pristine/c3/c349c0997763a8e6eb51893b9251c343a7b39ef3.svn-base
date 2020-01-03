@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.ui.ModelMap;
 
+import cn.com.goldwind.kis.bo.TermBo;
 import cn.com.goldwind.kis.entity.AccessSummary;
 import cn.com.goldwind.kis.entity.KeyInfo;
 import cn.com.goldwind.kis.mybatis.page.TableSplitResult;
@@ -40,8 +41,8 @@ public interface KeyInfoService {
 
 	public List<AccessSummary> findAccessSummary4backGround();
 
-	public List<String> findTermList_en();
+	public List<String> findClassificationList();
 
-	public List<String> findTermList_cn();
+	public List<TermBo> findTermBoListByClassification(String classification);
 
 }

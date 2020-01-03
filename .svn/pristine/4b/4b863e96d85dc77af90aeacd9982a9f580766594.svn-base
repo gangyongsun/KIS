@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import cn.com.goldwind.kis.bo.TermBo;
 import cn.com.goldwind.kis.entity.AccessSummary;
 import cn.com.goldwind.kis.entity.ClickLog;
 import cn.com.goldwind.kis.entity.KeyInfo;
@@ -123,15 +124,24 @@ public class KeyInfoController extends BaseController {
 	 */
 	@RequestMapping(value = "generateAutofillData")
 	@ResponseBody
-	public List<List<String>> generateAutofillData() {
-		//TODO 数据需要放到缓存中
-		List<List<String>> resultList = new ArrayList<List<String>>();
-		
-		List<String> englishList=keyInfoService.findTermList_en();
-		List<String> chineseList=keyInfoService.findTermList_cn();
+	public List<Map<String, String>> generateAutofillData() {
+		List<Map<String, String>> resultList = new ArrayList<Map<String, String>>();
 
-		resultList.add(englishList);
-		resultList.add(chineseList);
+		// 所有二级分类
+		List<String> classificationList = keyInfoService.findClassificationList();
+		for (String classification : classificationList) {
+			// 根据二级分类查找具体术语列表
+			List<TermBo> termBoList = keyInfoService.findTermBoListByClassification(classification);
+			StringBuilder termStr = new StringBuilder();
+			for (TermBo termBo : termBoList) {
+				termStr.append("'").append(termBo.getChinese()).append("','").append(termBo.getEnglish()).append("',");
+			}
+			termStr.deleteCharAt(termStr.length() - 1).toString();
+			
+			Map<String, String> map =new LinkedHashMap<String, String>();
+			map.put(classification, termStr.toString());
+			resultList.add(map);
+		}
 
 		return resultList;
 	}

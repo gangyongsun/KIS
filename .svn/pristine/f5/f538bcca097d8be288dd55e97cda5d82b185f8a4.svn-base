@@ -165,12 +165,12 @@
 		classificationQuantaty
 	</select>
 	
-	<select id="findTermList_en" resultType="java.lang.String">
-		SELECT english FROM t_key_info
+	<select id="findClassificationList" resultType="java.lang.String">
+		select distinct(classification2) from t_key_info
 	</select>
 	
-	<select id="findTermList_cn" resultType="java.lang.String">
-		SELECT chinese FROM t_key_info
+	<select id="findTermBoListByClassification" resultType="cn.com.goldwind.kis.bo.TermBo">
+		SELECT chinese,english FROM t_key_info where classification2=#{classification,jdbcType=VARCHAR}
 	</select>
 
 </mapper>

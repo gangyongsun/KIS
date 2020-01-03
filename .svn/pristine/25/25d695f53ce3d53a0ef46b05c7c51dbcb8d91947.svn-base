@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import cn.com.goldwind.kis.bo.TermBo;
 import cn.com.goldwind.kis.entity.AccessSummary;
 import cn.com.goldwind.kis.entity.KeyInfo;
 import tk.mybatis.mapper.common.Mapper;
@@ -73,17 +74,17 @@ public interface KeyInfoRepository extends Mapper<KeyInfo> {
 	public List<AccessSummary> findAccessSummary4backGround();
 
 	/**
-	 * 根据二级分类查术语英文列表
-	 * 
+	 * 查找所有2级分类
 	 * @return
 	 */
-	public List<String> findTermList_en();
+	public List<String> findClassificationList();
 
 	/**
-	 * 根据二级分类查术语中文列表
+	 * 根据分类查找内容
 	 * 
+	 * @param classification
 	 * @return
 	 */
-	public List<String> findTermList_cn();
+	public List<TermBo> findTermBoListByClassification(String classification);
 
 }
